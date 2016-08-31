@@ -7,4 +7,7 @@
     <string name="action_cancel">Cancel</string>
     <string name="action_delete">Delete</string>
     <string name="action_view">View</string>
+
+    <string name="state_ongoing">Ongoing</string>
+    <string name="state_done">Done</string>
 </resources>
