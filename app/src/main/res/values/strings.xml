@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Planner</string>
+    <string name="app_desc">A notepad app providing the fastest and most intuitive UI possible.</string>
+    
+    <string name="action_create">Create</string>
+    <string name="action_ok">OK</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_view">View</string>
+</resources>
