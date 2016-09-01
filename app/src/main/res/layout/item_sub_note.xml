@@ -10,24 +10,22 @@
         android:paddingBottom="12dp"
         android:orientation="vertical">
 
-        <TextView
+        <com.james.planner.views.ButteryEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:paddingTop="4dp"
             android:paddingBottom="4dp"
-            android:textColor="@color/textColorPrimary"
-            android:textSize="16sp"
-            android:singleLine="true"
-            android:lines="1"
-            android:maxLines="1"
-            android:ellipsize="end"
+            android:textColor="@color/textColorSecondary"
+            android:textSize="14sp"
             android:id="@+id/title" />
 
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:id="@+id/recycler" />
 
     </LinearLayout>

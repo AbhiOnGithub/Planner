@@ -6,10 +6,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.james.planner.R;
 import com.james.planner.data.NoteData;
+import com.james.planner.views.ButteryEditText;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,9 +33,12 @@ public class SubNoteAdapter extends RecyclerView.Adapter<SubNoteAdapter.ViewHold
     public void onBindViewHolder(ViewHolder holder, int position) {
         NoteData note = notes.get(position);
 
-        if (note.content != null)
-            ((TextView) holder.v.findViewById(R.id.title)).setText(note.content);
-        else holder.v.findViewById(R.id.title).setVisibility(View.GONE);
+        ButteryEditText editText = (ButteryEditText) holder.v.findViewById(R.id.title);
+
+        if (note.content != null) {
+            editText.setText(note.content);
+            editText.setEditable(false);
+        } else editText.setEditable(true);
 
         if (note.datas != null) {
             RecyclerView recycler = (RecyclerView) holder.v.findViewById(R.id.recycler);

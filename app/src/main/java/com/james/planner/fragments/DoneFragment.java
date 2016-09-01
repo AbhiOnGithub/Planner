@@ -24,6 +24,8 @@ public class DoneFragment extends SimpleFragment {
         recycler.setLayoutManager(new GridLayoutManager(getContext(), 1));
         recycler.setAdapter(new NoteAdapter(getContext(), ((Planner) getContext().getApplicationContext()).getDoneNotes()));
 
+        v.findViewById(R.id.fab).setVisibility(View.GONE);
+
         return v;
     }
 

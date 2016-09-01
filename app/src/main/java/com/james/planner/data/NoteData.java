@@ -9,6 +9,9 @@ public class NoteData implements Parcelable {
     public NoteData[] datas;
     public boolean done;
 
+    public NoteData() {
+    }
+
     protected NoteData(Parcel in) {
         content = in.readString();
         datas = in.createTypedArray(NoteData.CREATOR);

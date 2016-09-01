@@ -47,7 +47,7 @@ public class Planner extends Application {
     }
 
     public void addNote(NoteData note) {
-        notes.add(note);
+        notes.add(0, note);
         saveNotes();
     }
 
