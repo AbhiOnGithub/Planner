@@ -14,8 +14,12 @@ import com.james.planner.Planner;
 import com.james.planner.R;
 import com.james.planner.adapters.NoteAdapter;
 import com.james.planner.data.NoteData;
+import com.james.planner.dialogs.NoteDialog;
+import com.james.planner.utils.StaticUtils;
 
-public class OngoingFragment extends SimpleFragment {
+import java.util.List;
+
+public class OngoingFragment extends SimpleFragment implements Planner.NotesChangeListener {
 
     private Planner planner;
     private NoteAdapter adapter;
@@ -39,16 +43,35 @@ public class OngoingFragment extends SimpleFragment {
             @Override
             public void onClick(View v) {
                 NoteData data = new NoteData();
-                planner.addNote(data);
-                adapter.addItem(data);
+
+                NoteDialog dialog = new NoteDialog(getContext(), data);
+                dialog.setTransition(NoteDialog.TRANSITION_CIRCLE, StaticUtils.getRelativeLeft(v) + (v.getWidth() / 2), StaticUtils.getRelativeTop(v), v.getWidth(), v.getHeight());
+                dialog.show();
             }
         });
+
+        planner.addNotesChangeListener(this);
 
         return v;
     }
 
     @Override
+    public void onDestroy() {
+        planner.removeNotesChangeListener(this);
+        super.onDestroy();
+    }
+
+    @Override
     public String getTitle(Context context) {
         return context.getString(R.string.state_ongoing);
+    }
+
+    @Override
+    public void onActiveNotesChanged(List<NoteData> activeNotes) {
+        adapter.setNotes(activeNotes);
+    }
+
+    @Override
+    public void onDoneNotesChanged(List<NoteData> doneNotes) {
     }
 }

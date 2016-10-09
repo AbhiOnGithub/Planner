@@ -30,9 +30,7 @@ public class ImageUtils {
         }
 
         if (drawable != null) {
-            Drawable icon = drawable.getCurrent();
-            DrawableCompat.setTint(icon, Color.WHITE);
-            return icon;
+            return drawable.getCurrent();
         } else {
             Log.wtf(context.getClass().getName(), "Can't get a vector drawable.");
             return new ColorDrawable(Color.TRANSPARENT);

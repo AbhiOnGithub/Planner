@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
         linearLayout = (LinearLayout) findViewById(R.id.linearLayout);
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         viewPager = (ViewPager) findViewById(R.id.viewPager);
-        ;
 
         adapter = new SimplePagerAdapter(this, getSupportFragmentManager(), new OngoingFragment(), new DoneFragment());
         viewPager.setAdapter(adapter);

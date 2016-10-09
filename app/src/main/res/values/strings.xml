@@ -6,8 +6,15 @@
     <string name="action_ok">OK</string>
     <string name="action_cancel">Cancel</string>
     <string name="action_delete">Delete</string>
+    <string name="action_delete_note">Delete Note</string>
     <string name="action_view">View</string>
 
-    <string name="state_ongoing">Ongoing</string>
-    <string name="state_done">Done</string>
+    <string name="error_no_text">Aren\'t you forgetting something?</string>
+
+    <string name="confirm_delete_note">Are you sure you want to delete this note? It cannot be recovered.</string>
+
+    <string name="state_ongoing">Recent</string>
+    <string name="state_done">Archived</string>
+
+    <string name="title">Title</string>
 </resources>

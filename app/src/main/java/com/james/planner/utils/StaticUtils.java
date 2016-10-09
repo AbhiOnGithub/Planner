@@ -9,6 +9,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.View;
+import android.view.ViewParent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +19,22 @@ public class StaticUtils {
 
     public static float getPixelsFromDp(Context context, int dp) {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
+    }
+
+    public static int getRelativeLeft(View view) {
+        ViewParent parent = view.getParent();
+        if (parent == view.getRootView()) return view.getLeft();
+        else if (parent instanceof View)
+            return view.getLeft() + getRelativeLeft((View) view.getParent());
+        else return 0;
+    }
+
+    public static int getRelativeTop(View view) {
+        ViewParent parent = view.getParent();
+        if (view.getParent() == view.getRootView()) return view.getTop();
+        else if (parent instanceof View)
+            return view.getTop() + getRelativeTop((View) view.getParent());
+        else return 0;
     }
 
     public static boolean isPermissionsGranted(Context context) {

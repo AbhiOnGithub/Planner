@@ -8,15 +8,16 @@ import com.google.gson.Gson;
 import com.james.planner.data.NoteData;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Planner extends Application {
 
-    private static final String PREF_NOTES = "com.james.planner.PREF_NOTES";
+    private static final String PREF_NOTE = "com.james.planner.PREF_NOTE";
+    private static final String PREF_NOTES_SIZE = "com.james.planner.PREF_NOTES_SIZE";
 
     private SharedPreferences prefs;
     public List<NoteData> notes;
+    private List<NotesChangeListener> listeners;
 
     @Override
     public void onCreate() {
@@ -24,9 +25,13 @@ public class Planner extends Application {
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
+        listeners = new ArrayList<>();
         notes = new ArrayList<>();
-        if (prefs.contains(PREF_NOTES)) {
-            notes.addAll(Arrays.asList(new Gson().fromJson(prefs.getString(PREF_NOTES, ""), NoteData[].class)));
+
+        int size = prefs.getInt(PREF_NOTES_SIZE, 0);
+        for (int i = 0; i < size; i++) {
+            if (prefs.contains(PREF_NOTE + i))
+                notes.add(new Gson().fromJson(prefs.getString(PREF_NOTE + i, null), NoteData.class));
         }
     }
 
@@ -47,25 +52,79 @@ public class Planner extends Application {
     }
 
     public void addNote(NoteData note) {
-        notes.add(0, note);
+        notes.add(note);
         saveNotes();
+
+        List<NoteData> activeNotes = getActiveNotes();
+        for (NotesChangeListener listener : listeners) {
+            listener.onActiveNotesChanged(activeNotes);
+        }
     }
 
     public void saveNote(NoteData note) {
         saveNotes();
+
+        if (note.done) {
+            List<NoteData> doneNotes = getDoneNotes();
+            for (NotesChangeListener listener : listeners) {
+                listener.onDoneNotesChanged(doneNotes);
+            }
+        } else {
+            List<NoteData> activeNotes = getActiveNotes();
+            for (NotesChangeListener listener : listeners) {
+                listener.onActiveNotesChanged(activeNotes);
+            }
+        }
     }
 
     public void setDone(boolean done, NoteData note) {
         note.done = done;
         saveNotes();
+
+        List<NoteData> activeNotes = getActiveNotes(), doneNotes = getDoneNotes();
+        for (NotesChangeListener listener : listeners) {
+            listener.onActiveNotesChanged(activeNotes);
+            listener.onDoneNotesChanged(doneNotes);
+        }
     }
 
     public void removeNote(NoteData note) {
         notes.remove(note);
         saveNotes();
+
+        if (note.done) {
+            List<NoteData> doneNotes = getDoneNotes();
+            for (NotesChangeListener listener : listeners) {
+                listener.onDoneNotesChanged(doneNotes);
+            }
+        } else {
+            List<NoteData> activeNotes = getActiveNotes();
+            for (NotesChangeListener listener : listeners) {
+                listener.onActiveNotesChanged(activeNotes);
+            }
+        }
     }
 
     private void saveNotes() {
-        prefs.edit().putString(PREF_NOTES, new Gson().toJson(notes.toArray(new NoteData[notes.size()]))).apply();
+        SharedPreferences.Editor editor = prefs.edit();
+        for (int i = 0; i < notes.size(); i++) {
+            editor.putString(PREF_NOTE + i, new Gson().toJson(notes.get(i)));
+        }
+        editor.putInt(PREF_NOTES_SIZE, notes.size());
+        editor.apply();
+    }
+
+    public void addNotesChangeListener(NotesChangeListener listener) {
+        listeners.add(listener);
+    }
+
+    public void removeNotesChangeListener(NotesChangeListener listener) {
+        listeners.remove(listener);
+    }
+
+    public interface NotesChangeListener {
+        void onActiveNotesChanged(List<NoteData> activeNotes);
+
+        void onDoneNotesChanged(List<NoteData> doneNotes);
     }
 }
