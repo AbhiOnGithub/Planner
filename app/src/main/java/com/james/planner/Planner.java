@@ -54,11 +54,6 @@ public class Planner extends Application {
     public void addNote(NoteData note) {
         notes.add(note);
         saveNotes();
-
-        List<NoteData> activeNotes = getActiveNotes();
-        for (NotesChangeListener listener : listeners) {
-            listener.onActiveNotesChanged(activeNotes);
-        }
     }
 
     public void saveNote(NoteData note) {

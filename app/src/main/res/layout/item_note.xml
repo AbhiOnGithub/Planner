@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
         android:layout_marginTop="4dp"
+        android:animateLayoutChanges="true"
         android:background="@android:color/white"
         android:orientation="vertical"
         android:paddingBottom="12dp"
@@ -19,9 +20,9 @@
             android:id="@+id/actions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:paddingLeft="4dp"
             android:paddingRight="4dp"
-            android:orientation="horizontal"
             android:visibility="gone">
 
             <LinearLayout

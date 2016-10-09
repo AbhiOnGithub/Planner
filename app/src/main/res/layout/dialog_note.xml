@@ -24,6 +24,7 @@
                 android:layout_height="56dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="center"
+                android:tint="@color/textColorPrimaryInverse"
                 app:srcCompat="@drawable/ic_close" />
 
         </LinearLayout>
@@ -34,6 +35,7 @@
             android:layout_height="56dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="center"
+            android:tint="@color/textColorPrimaryInverse"
             app:srcCompat="@drawable/ic_reminder" />
 
         <android.support.v7.widget.AppCompatImageView
@@ -42,6 +44,7 @@
             android:layout_height="56dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="center"
+            android:tint="@color/textColorPrimaryInverse"
             app:srcCompat="@drawable/ic_done" />
 
     </LinearLayout>
@@ -58,8 +61,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/title"
-            android:textColor="@color/textColorPrimary"
-            android:textColorHint="@color/textColorSecondary"
+            android:textColor="@color/textColorPrimaryInverse"
+            android:textColorHint="@color/textColorSecondaryInverse"
             android:textSize="26sp" />
 
     </android.support.design.widget.TextInputLayout>

@@ -45,7 +45,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
     public void onBindViewHolder(final ViewHolder holder, int position) {
         NoteData note = notes.get(position);
 
-        ViewCompat.setElevation(holder.v.findViewById(R.id.layout), StaticUtils.getPixelsFromDp(context, 2));
+        ViewCompat.setElevation(holder.v.findViewById(R.id.layout), StaticUtils.getPixelsFromDp(context, expandedItem != null && expandedItem == position ? 3 : 1));
 
         TextView textView = (TextView) holder.v.findViewById(R.id.title);
         if (note.content != null) {
@@ -63,10 +63,20 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
         holder.v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (expandedItem != null && expandedItem == holder.getAdapterPosition())
+                Integer previousItem;
+
+                View actions = v.findViewById(R.id.actions);
+                if (actions.getVisibility() == View.VISIBLE) {
+                    actions.setVisibility(View.GONE);
                     expandedItem = null;
-                else expandedItem = holder.getAdapterPosition();
-                notifyDataSetChanged();
+                } else {
+                    actions.setVisibility(View.VISIBLE);
+                    previousItem = expandedItem;
+                    expandedItem = holder.getAdapterPosition();
+                    if (previousItem != null) notifyItemChanged(previousItem);
+                }
+
+                notifyItemChanged(holder.getAdapterPosition());
             }
         });
 
@@ -76,8 +86,8 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
                 new AlertDialog.Builder(context).setTitle(R.string.action_delete_note).setMessage(R.string.confirm_delete_note).setPositiveButton(R.string.action_ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        planner.removeNote(notes.get(holder.getAdapterPosition()));
                         expandedItem = null;
+                        planner.removeNote(notes.get(holder.getAdapterPosition()));
                         dialog.dismiss();
                     }
                 }).setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
@@ -94,9 +104,9 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
         archive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                expandedItem = null;
                 NoteData note = notes.get(holder.getAdapterPosition());
                 planner.setDone(!note.done, note);
-                expandedItem = null;
             }
         });
 
