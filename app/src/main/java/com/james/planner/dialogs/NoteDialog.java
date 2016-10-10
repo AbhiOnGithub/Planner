@@ -13,18 +13,20 @@ import com.james.planner.Planner;
 import com.james.planner.R;
 import com.james.planner.adapters.SubNoteAdapter;
 import com.james.planner.data.NoteData;
+import com.james.planner.utils.ImageUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class NoteDialog extends AnimatedDialog {
 
     private Planner planner;
     private NoteData noteData;
-    private SubNoteAdapter noteAdapter;
 
-    AppCompatEditText title;
+    private RecyclerView recycler;
+    private SubNoteAdapter noteAdapter;
+    private List<NoteData> datas;
+
+    private AppCompatEditText title;
 
     public NoteDialog(Context context, NoteData noteData) {
         super(context, R.style.AppTheme_Dialog_Fullscreen);
@@ -57,12 +59,18 @@ public class NoteDialog extends AnimatedDialog {
             }
         });
 
-        RecyclerView recycler = (RecyclerView) findViewById(R.id.recycler);
+        recycler = (RecyclerView) findViewById(R.id.recycler);
         recycler.setLayoutManager(new GridLayoutManager(getContext(), 1));
 
-        List<NoteData> datas = new ArrayList<>();
-        if (noteData.datas != null) datas.addAll(Arrays.asList(noteData.datas));
-        noteAdapter = new SubNoteAdapter(getContext(), datas);
+        datas = noteData.getNotes();
+        if (datas.size() < 1) datas.add(new NoteData());
+
+        noteAdapter = new SubNoteAdapter(getContext(), datas, new SubNoteAdapter.OnEditListener() {
+            @Override
+            public void onEdit(NoteData[] notes) {
+            }
+        });
+
         recycler.setAdapter(noteAdapter);
 
         findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
@@ -81,11 +89,30 @@ public class NoteDialog extends AnimatedDialog {
         findViewById(R.id.done).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (noteData.content == null || noteData.content.length() < 1) {
+                    title.setError(getContext().getString(R.string.error_no_text), ImageUtils.getVectorDrawable(getContext(), R.drawable.ic_error));
+                    return;
+                }
+
+                if (noteAdapter.hasError()) return;
+
+                noteData.setNotes(datas);
+
                 if (noteData.done) planner.setDone(false, noteData);
                 else if (!planner.getActiveNotes().contains(noteData)) planner.addNote(noteData);
                 else planner.saveNote(noteData);
 
                 dismiss();
+            }
+        });
+
+        findViewById(R.id.add).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                datas.add(new NoteData());
+                noteAdapter.setNotes(datas);
+
+                recycler.smoothScrollToPosition(datas.size() - 1);
             }
         });
     }

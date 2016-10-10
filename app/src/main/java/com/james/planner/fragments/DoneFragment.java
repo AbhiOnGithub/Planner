@@ -20,6 +20,8 @@ public class DoneFragment extends SimpleFragment implements Planner.NotesChangeL
 
     private Planner planner;
     private NoteAdapter noteAdapter;
+    private List<NoteData> notes;
+    private View empty;
 
     @Nullable
     @Override
@@ -29,12 +31,15 @@ public class DoneFragment extends SimpleFragment implements Planner.NotesChangeL
         planner = (Planner) getContext().getApplicationContext();
 
         RecyclerView recycler = (RecyclerView) v.findViewById(R.id.recycler);
+        empty = v.findViewById(R.id.empty);
+
         recycler.setLayoutManager(new GridLayoutManager(getContext(), 1));
 
-        noteAdapter = new NoteAdapter(getContext(), ((Planner) getContext().getApplicationContext()).getDoneNotes());
+        notes = planner.getDoneNotes();
+        noteAdapter = new NoteAdapter(getContext(), recycler, notes);
         recycler.setAdapter(noteAdapter);
 
-        v.findViewById(R.id.fab).setVisibility(View.GONE);
+        empty.setVisibility(notes.size() > 0 ? View.GONE : View.VISIBLE);
 
         planner.addNotesChangeListener(this);
 
@@ -58,6 +63,9 @@ public class DoneFragment extends SimpleFragment implements Planner.NotesChangeL
 
     @Override
     public void onDoneNotesChanged(List<NoteData> doneNotes) {
-        noteAdapter.setNotes(doneNotes);
+        notes = doneNotes;
+        noteAdapter.setNotes(notes);
+
+        empty.setVisibility(notes.size() > 0 ? View.GONE : View.VISIBLE);
     }
 }

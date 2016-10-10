@@ -53,7 +53,7 @@ public class Planner extends Application {
 
     public void addNote(NoteData note) {
         notes.add(note);
-        saveNotes();
+        saveNote(note);
     }
 
     public void saveNote(NoteData note) {

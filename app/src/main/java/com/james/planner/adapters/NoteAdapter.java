@@ -2,11 +2,13 @@ package com.james.planner.adapters;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 import com.james.planner.Planner;
 import com.james.planner.R;
 import com.james.planner.data.NoteData;
+import com.james.planner.dialogs.AnimatedDialog;
 import com.james.planner.dialogs.NoteDialog;
 import com.james.planner.utils.ImageUtils;
 import com.james.planner.utils.StaticUtils;
@@ -25,13 +28,15 @@ import java.util.List;
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
 
     private Context context;
+    private RecyclerView recyclerView;
     private List<NoteData> notes;
     private Planner planner;
 
     private Integer expandedItem;
 
-    public NoteAdapter(Context context, List<NoteData> notes) {
+    public NoteAdapter(Context context, RecyclerView recyclerView, List<NoteData> notes) {
         this.context = context;
+        this.recyclerView = recyclerView;
         this.notes = notes;
         planner = (Planner) context.getApplicationContext();
     }
@@ -54,6 +59,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
 
         RecyclerView recycler = (RecyclerView) holder.v.findViewById(R.id.recycler);
         if (note.datas != null) {
+            recycler.setVisibility(View.VISIBLE);
             recycler.setLayoutManager(new GridLayoutManager(context, 1));
             recycler.setNestedScrollingEnabled(false);
             recycler.setAdapter(new SubNoteAdapter(context, Arrays.asList(note.datas)));
@@ -63,19 +69,19 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
         holder.v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Integer previousItem;
-
                 View actions = v.findViewById(R.id.actions);
                 if (actions.getVisibility() == View.VISIBLE) {
                     actions.setVisibility(View.GONE);
                     expandedItem = null;
                 } else {
                     actions.setVisibility(View.VISIBLE);
-                    previousItem = expandedItem;
+                    Integer previousItem = expandedItem;
                     expandedItem = holder.getAdapterPosition();
                     if (previousItem != null) notifyItemChanged(previousItem);
                 }
 
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+                    TransitionManager.beginDelayedTransition(recyclerView);
                 notifyItemChanged(holder.getAdapterPosition());
             }
         });
@@ -114,6 +120,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
                 NoteDialog dialog = new NoteDialog(context, notes.get(holder.getAdapterPosition()));
+                dialog.setTransition(AnimatedDialog.TRANSITION_CIRCLE, v.getX() + (v.getWidth() / 2), StaticUtils.getRelativeTop(v), v.getWidth(), v.getHeight());
                 dialog.show();
             }
         });

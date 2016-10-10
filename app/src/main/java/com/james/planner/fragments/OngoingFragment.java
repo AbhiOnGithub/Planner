@@ -3,7 +3,6 @@ package com.james.planner.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,8 +13,6 @@ import com.james.planner.Planner;
 import com.james.planner.R;
 import com.james.planner.adapters.NoteAdapter;
 import com.james.planner.data.NoteData;
-import com.james.planner.dialogs.NoteDialog;
-import com.james.planner.utils.StaticUtils;
 
 import java.util.List;
 
@@ -23,6 +20,8 @@ public class OngoingFragment extends SimpleFragment implements Planner.NotesChan
 
     private Planner planner;
     private NoteAdapter adapter;
+    private List<NoteData> notes;
+    private View empty;
 
     @Nullable
     @Override
@@ -32,23 +31,15 @@ public class OngoingFragment extends SimpleFragment implements Planner.NotesChan
         planner = (Planner) getContext().getApplicationContext();
 
         RecyclerView recycler = (RecyclerView) v.findViewById(R.id.recycler);
+        empty = v.findViewById(R.id.empty);
+
         recycler.setLayoutManager(new GridLayoutManager(getContext(), 1));
 
-        adapter = new NoteAdapter(getContext(), planner.getActiveNotes());
+        notes = planner.getActiveNotes();
+        adapter = new NoteAdapter(getContext(), recycler, notes);
         recycler.setAdapter(adapter);
 
-        FloatingActionButton fab = (FloatingActionButton) v.findViewById(R.id.fab);
-        fab.setImageResource(R.drawable.ic_add);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                NoteData data = new NoteData();
-
-                NoteDialog dialog = new NoteDialog(getContext(), data);
-                dialog.setTransition(NoteDialog.TRANSITION_CIRCLE, StaticUtils.getRelativeLeft(v) + (v.getWidth() / 2), StaticUtils.getRelativeTop(v), v.getWidth(), v.getHeight());
-                dialog.show();
-            }
-        });
+        empty.setVisibility(notes.size() > 0 ? View.GONE : View.VISIBLE);
 
         planner.addNotesChangeListener(this);
 
@@ -68,7 +59,9 @@ public class OngoingFragment extends SimpleFragment implements Planner.NotesChan
 
     @Override
     public void onActiveNotesChanged(List<NoteData> activeNotes) {
-        adapter.setNotes(activeNotes);
+        notes = activeNotes;
+        adapter.setNotes(notes);
+        empty.setVisibility(notes.size() > 0 ? View.GONE : View.VISIBLE);
     }
 
     @Override

@@ -39,6 +39,15 @@
             app:srcCompat="@drawable/ic_reminder" />
 
         <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/add"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="center"
+            android:tint="@color/textColorPrimaryInverse"
+            app:srcCompat="@drawable/ic_add_circle" />
+
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/done"
             android:layout_width="56dp"
             android:layout_height="56dp"
@@ -60,7 +69,7 @@
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/title"
+            android:hint="@string/hint_title"
             android:textColor="@color/textColorPrimaryInverse"
             android:textColorHint="@color/textColorSecondaryInverse"
             android:textSize="26sp" />
@@ -70,7 +79,8 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:clipToPadding="false"
         android:padding="4dp" />
 

@@ -3,6 +3,9 @@ package com.james.planner.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class NoteData implements Parcelable {
 
     public String content;
@@ -10,6 +13,29 @@ public class NoteData implements Parcelable {
     public boolean done;
 
     public NoteData() {
+    }
+
+    public List<NoteData> getNotes() {
+        List<NoteData> notes = new ArrayList<>();
+        if (datas != null) {
+            for (NoteData data : datas) {
+                notes.add(data.clone());
+            }
+        }
+        return notes;
+    }
+
+    public void setNotes(List<NoteData> notes) {
+        datas = notes.toArray(new NoteData[notes.size()]);
+    }
+
+    @Override
+    public NoteData clone() {
+        NoteData note = new NoteData();
+        note.content = content;
+        if (datas != null) note.datas = getNotes().toArray(new NoteData[datas.length]);
+        note.done = done;
+        return note;
     }
 
     protected NoteData(Parcel in) {
